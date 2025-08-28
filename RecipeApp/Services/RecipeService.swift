@@ -7,6 +7,12 @@
 
 import Foundation
 
+protocol URLSessionProtocol {
+    func data(from url: URL) async throws -> (Data, URLResponse)
+}
+
+extension URLSession: URLSessionProtocol {}
+
 protocol RecipeServiceProtocol {
     func fetchRecipes(limit: Int, skip: Int) async throws -> RecipeResponse
     func fetchRecipe(id: Int) async throws -> Recipe
@@ -15,9 +21,9 @@ protocol RecipeServiceProtocol {
 // MARK: - Services
 final class RecipeService: RecipeServiceProtocol {
     private let baseURL = "https://dummyjson.com"
-    private let session: URLSession
-    
-    init(session: URLSession = .shared) {
+    private let session: URLSessionProtocol
+       
+    init(session: URLSessionProtocol = URLSession.shared) {
         self.session = session
     }
     
